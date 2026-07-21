@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منظومة مشروع تطبيق السياحة الذكي في مصر | Smart Egypt Travel Dashboard</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts (Tajawal & Cairo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pharaoh: {
+                            gold: '#D4AF37',
+                            goldHover: '#B59227',
+                            dark: '#0F172A',
+                            card: '#1E293B',
+                            accent: '#2563EB',
+                            emerald: '#059669',
+                            lapis: '#1E40AF',
+                            crimson: '#DC2626'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbars and styling effects */
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background-color: #090D16;
+            color: #F1F5F9;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF099 0%, #D4AF37 50%, #9A7B1C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border-glow {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #D4AF37 0%, #B59227 100%);
+            color: #0F172A;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-pharaoh-gold selection:text-pharaoh-dark">
+
+    <!-- Top Header -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800 px-4 lg:px-8 py-3 transition-all">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-pharaoh-gold to-yellow-200 flex items-center justify-center text-pharaoh-dark font-black text-2xl shadow-lg">
+                    🇪🇬
+                </div>
+                <div>
+                    <h1 class="text-xl lg:text-2xl font-black tracking-wide gold-gradient-text">
+                        Smart Egypt Travel Hub
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">دليل تنفيذ وإدارة مشروع السياحة الذكي (5 أعضاء)</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Stats -->
+            <div class="hidden md:flex items-center gap-4 text-xs">
+                <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <span class="text-slate-400">فريق العمل:</span>
+                    <span class="font-bold text-pharaoh-gold mr-1">5 أفراد (4 CS + 1 Cyber)</span>
+                </div>
+                <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <span class="text-slate-400">الوحدات (Modules):</span>
+                    <span class="font-bold text-emerald-400 mr-1">12 موديول</span>
+                </div>
+                <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <span class="text-slate-400">قاعدة البيانات:</span>
+                    <span class="font-bold text-blue-400 mr-1">12 Entity</span>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobileNavToggle" class="md:hidden p-2 text-slate-300 hover:text-pharaoh-gold focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-slate-900/90 border-b border-slate-800 sticky top-[65px] z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 overflow-x-auto scrollbar-none">
+            <div class="flex items-center gap-2 py-2 min-w-max text-sm" id="navTabsContainer">
+                <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2">
+                    <i class="fas fa-chart-pie"></i> النظرة العامة
+                </button>
+                <button onclick="switchTab('team')" id="tab-team" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <i class="fas fa-users-gear"></i> تقسيم الفريق والمهام (5 أعضاء)
+                </button>
+                <button onclick="switchTab('phases')" id="tab-phases" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <i class="fas fa-list-check"></i> مراحل التنفيذ (Phases 0-5)
+                </button>
+                <button onclick="switchTab('modules')" id="tab-modules" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <i class="fas fa-cubes"></i> الـ Modules وقاعدة البيانات (ERD)
+                </button>
+                <button onclick="switchTab('tools')" id="tab-tools" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <i class="fas fa-screwdriver-wrench"></i> التقنيات والأدوات المطلوب معرفتها
+                </button>
+                <button onclick="switchTab('learning')" id="tab-learning" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <i class="fas fa-graduation-cap"></i> دليل التعلم عند التعثر
+                </button>
+                <button onclick="switchTab('simulator')" id="tab-simulator" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <i class="fas fa-wand-magic-sparkles text-pharaoh-gold"></i> محاكي معمارية الـ AI
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8 space-y-8">
+
+        <!-- ================= TAB 1: OVERVIEW ================= -->
+        <section id="view-overview" class="space-y-8">
+            
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-2xl glass-panel p-6 md:p-10 border border-slate-700/60 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
+                <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-pharaoh-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pharaoh-gold/10 border border-pharaoh-gold/30 text-pharaoh-gold text-xs font-bold">
+                        <i class="fas fa-rocket"></i> دليل التخطيط الاستراتيجي الشامل
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-extrabold leading-tight">
+                        مشروع تطبيق مصر السياحي الذكي <br>
+                        <span class="gold-gradient-text">(Smart Egypt AI Travel App)</span>
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                        تطبيق هجين يجمع خدمات السياحة المصرية كاملة في منصة واحدة مدعومة بالذكاء الاصطناعي (AI Itinerary + RAG Chatbot + Recommendation Engine)، مصممة للتغلب على تشتت السائح بين تطبيقات Booking, Google Maps, TripAdvisor, و ChatGPT.
+                    </p>
+                    
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="switchTab('team')" class="px-5 py-2.5 rounded-xl bg-pharaoh-gold text-pharaoh-dark font-bold hover:bg-pharaoh-goldHover transition-all shadow-lg flex items-center gap-2">
+                            <i class="fas fa-user-check"></i> استعراض توزيع المهام
+                        </button>
+                        <button onclick="switchTab('phases')" class="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700 transition-all flex items-center gap-2">
+                            <i class="fas fa-timeline"></i> متابعة خطة التنفيذ
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Problem & Solution Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- The Problem -->
+                <div class="glass-panel p-6 rounded-2xl border-r-4 border-r-rose-500 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl font-bold">
+                            <i class="fas fa-triangle-exclamation"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-rose-300">المشكلة الحالية (Problem Statement)</h3>
+                    </div>
+                    <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
+                        السائح القادم إلى مصر يعاني من **تشتت شديد** واستخدام عدة تطبيقات منفصلة للرحلة الواحدة:
+                    </p>
+                    <ul class="space-y-2 text-xs md:text-sm text-slate-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> Google Maps لاستكشاف الأماكن والطرق.</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> Booking لحجز الفنادق والإقامة.</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> TripAdvisor للبحث عن المطاعم والمراجعات.</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> تطبيقات الفعاليات المحلية لمعرفة الأحداث الجارية.</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> ChatGPT للأسئلة التاريخية والثقافية العامة.</li>
+                    </ul>
+                </div>
+
+                <!-- The Solution -->
+                <div class="glass-panel p-6 rounded-2xl border-r-4 border-r-emerald-500 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-emerald-300">الحل والهدف (The AI Solution)</h3>
+                    </div>
+                    <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
+                        تطبيق ذكي متكامل **(All-in-One)** يُلبي جميع احتياجات السائح بضغطة زر واحدة:
+                    </p>
+                    <ul class="space-y-2 text-xs md:text-sm text-slate-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> مولد خطط رحلات أوتوماتيكي بناءً على (الميزانية، الأيام، والاهتمامات).</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> مساعد ذكي (Chatbot) متقن للتاريخ والثقافة المصرية بالـ RAG.</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> سوق للمرشدين السياحيين وحجوزات الفنادق والفعاليات.</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> نظام توصية ذكي يراعي الموقع والميزانية المحددة.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Core Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
+                    <div class="text-3xl font-black text-pharaoh-gold">5</div>
+                    <div class="text-xs text-slate-400 font-medium">أعضاء الفريق (1 Cyber + 4 CS)</div>
+                </div>
+                <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
+                    <div class="text-3xl font-black text-blue-400">12</div>
+                    <div class="text-xs text-slate-400 font-medium">وحدة برمجية (Modules)</div>
+                </div>
+                <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
+                    <div class="text-3xl font-black text-emerald-400">12</div>
+                    <div class="text-xs text-slate-400 font-medium">جداول قواعد البيانات (ERD)</div>
+                </div>
+                <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
+                    <div class="text-3xl font-black text-purple-400">3</div>
+                    <div class="text-xs text-slate-400 font-medium">محركات ذكاء اصطناعي (AI)</div>
+                </div>
+            </div>
+
+            <!-- AI Engine Core Triad -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h3 class="text-lg font-bold flex items-center gap-2 gold-gradient-text">
+                    <i class="fas fa-brain"></i> العقل المدبر: محركات الذكاء الاصطناعي الـ 3 بالمشروع
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs md:text-sm">
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                        <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold">المحرك 1</span>
+                        <h4 class="font-bold text-slate-200">AI Travel Assistant (Chatbot)</h4>
+                        <p class="text-slate-400">يجيب عن أسئلة السائح حول التاريخ، الأماكن المناسبة للأطفال، الثقافة والطقس باستخدام تقنية RAG وقاعدة بيانات Vector.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                        <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-bold">المحرك 2</span>
+                        <h4 class="font-bold text-slate-200">Recommendation Engine</h4>
+                        <p class="text-slate-400">يقترح المطاعم، المتاحف، الفعاليات والمرشدين بناءً على ميزانية المستخدم وموقعه الجغرافي وتفضيلاته.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                        <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold">المحرك 3 (الأصعب)</span>
+                        <h4 class="font-bold text-slate-200">Smart Itinerary Generator</h4>
+                        <p class="text-slate-400">يأخذ (الميزانية، عدد الأيام، الاهتمامات) ويولد جدولاً يومياً كاملاً موزّع الأوقات والأنشطة بدقة أوتوماتيكياً.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: TEAM & TASKS ================= -->
+        <section id="view-team" class="space-y-6 hidden">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-black gold-gradient-text">تقسيم الفريق والمسؤوليات (5 أعضاء)</h2>
+                    <p class="text-xs md:text-sm text-slate-400">توزيع التكليفات الدقيقة بين مهندس الأمن السيبراني و مهندسي علوم الحاسب الأربعة.</p>
+                </div>
+                <!-- Filter buttons -->
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <button onclick="filterTeam('all')" class="team-filter-btn px-3 py-1.5 rounded-lg bg-pharaoh-gold text-pharaoh-dark font-bold">الكل (5)</button>
+                    <button onclick="filterTeam('cyber')" class="team-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">الأمن السيبراني (1)</button>
+                    <button onclick="filterTeam('cs')" class="team-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">علوم الحاسب (4)</button>
+                </div>
+            </div>
+
+            <!-- Team Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="teamCardsGrid">
+                
+                <!-- Member 1: Cybersecurity Specialist -->
+                <div class="team-card cyber glass-panel p-6 rounded-2xl border border-slate-700 hover:border-pharaoh-gold/50 transition-all space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold">
+                            <i class="fas fa-shield-halved"></i> مهندس أمن المعلومات
+                        </span>
+                        <span class="text-xs text-slate-500 font-mono">Cyber Member</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-100">العضو 1: متخصص الأمن السيبراني</h3>
+                        <p class="text-xs text-slate-400 mt-1">تأمين المنظومة، المصادقة، وحماية البيانات والـ Admin Dashboard</p>
+                    </div>
+                    <hr class="border-slate-800">
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-pharaoh-gold uppercase tracking-wider">التكليفات والمسؤوليات الأساسية:</h4>
+                        <ul class="space-y-2 text-xs text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>Module 1 (Auth):</strong> تطبيق JWT، OAuth2 (Google Login)، وتشفير Bcrypt/Argon2.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>Rate Limiting & DDoS:</strong> إعداد الحماية من هجمات Brute Force و SQLi و XSS.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>RBAC الصلاحيات:</strong> تأمين لوحة التحكم Module 12 وفصل صلاحيات المستخدم/المرشد/الأدمن.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>Data Privacy:</strong> تشفير البيانات الحساسة والحجوزات (Encryption in Transit & Rest).</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>Penetration Testing:</strong> إجراء اختبار اختراق شامل وكتابة تقرير التقييم الأمني.</span></li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                        <strong class="text-slate-200">التقنيات الخاصة به:</strong> OAuth2, JWT, Helmet, Argon2, OWASP ZAP, Postman Security Tests.
+                    </div>
+                </div>
+
+                <!-- Member 2: AI / ML Engineer (CS 1) -->
+                <div class="team-card cs glass-panel p-6 rounded-2xl border border-slate-700 hover:border-pharaoh-gold/50 transition-all space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold">
+                            <i class="fas fa-robot"></i> علوم حاسب 1 (CS Lead)
+                        </span>
+                        <span class="text-xs text-slate-500 font-mono">AI / ML Engineer</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-100">العضو 2: مهندس الذكاء الاصطناعي</h3>
+                        <p class="text-xs text-slate-400 mt-1">بناء عقل التطبيق (RAG Chatbot + Itinerary Generator + Vector DB)</p>
+                    </div>
+                    <hr class="border-slate-800">
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-pharaoh-gold uppercase tracking-wider">التكليفات والمسؤوليات الأساسية:</h4>
+                        <ul class="space-y-2 text-xs text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Module 5 (Itinerary):</strong> خوارزمية توليد جدول الرحلات التلقائي بناءً على الميزانية والوقت.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Module 9 (AI Bot):</strong> بناء Chatbot باستخدام Gemini API وتقنية RAG للإجابة عن التاريخ.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Module 10 (Knowledge Base):</strong> تحويل التاريخ والثقافة المصرية إلى Vector Database (ChromaDB/PgVector).</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Recommendation Engine:</strong> خوارزمية ترشيح الأماكن والمطاعم حسب اهتمام وخصائص المستخدم.</span></li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                        <strong class="text-slate-200">التقنيات الخاصة به:</strong> Python FastAPI, LangChain, Gemini API, ChromaDB / PgVector, Embeddings.
+                    </div>
+                </div>
+
+                <!-- Member 3: Backend & Database Lead (CS 2) -->
+                <div class="team-card cs glass-panel p-6 rounded-2xl border border-slate-700 hover:border-pharaoh-gold/50 transition-all space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold">
+                            <i class="fas fa-server"></i> علوم حاسب 2
+                        </span>
+                        <span class="text-xs text-slate-500 font-mono">Backend Lead</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-100">العضو 3: مهندس الخلفية وقواعد البيانات</h3>
+                        <p class="text-xs text-slate-400 mt-1">بناء البنية التحتية، تصميم قاعدة البيانات الـ 12 Entities، والـ RESTful APIs</p>
+                    </div>
+                    <hr class="border-slate-800">
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-pharaoh-gold uppercase tracking-wider">التكليفات والمسؤوليات الأساسية:</h4>
+                        <ul class="space-y-2 text-xs text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-0.5"></i> <span><strong>Database Architecture:</strong> بناء قاعدة بيانات PostgreSQL تستوعب 12 Entity والعلاقات بينها.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-0.5"></i> <span><strong>Module 4 & 10 APIs:</strong> بناء APIs الأماكن، المتاحف، الأهرامات، والمعلومات التاريخية.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-0.5"></i> <span><strong>Module 12 Backend:</strong> APIs لوحة التحكم (CRUD Operations) لإضافة وتعديل الأماكن والأحداث.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-0.5"></i> <span><strong>DevOps & Server:</strong> حزم التطبيق بـ Docker ورفعه على خوادم سحابية (Render/AWS).</span></li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                        <strong class="text-slate-200">التقنيات الخاصة به:</strong> PostgreSQL, Node.js Express / Python FastAPI, Prisma ORM, Docker.
+                    </div>
+                </div>
+
+                <!-- Member 4: Frontend Lead (CS 3) -->
+                <div class="team-card cs glass-panel p-6 rounded-2xl border border-slate-700 hover:border-pharaoh-gold/50 transition-all space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+                            <i class="fas fa-mobile-screen"></i> علوم حاسب 3
+                        </span>
+                        <span class="text-xs text-slate-500 font-mono">Mobile / Frontend</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-100">العضو 4: مهندس الواجهات والتطبيق</h3>
+                        <p class="text-xs text-slate-400 mt-1">بناء واجهات التطبيق وتجربة المستخدم (Flutter / React Native UI)</p>
+                    </div>
+                    <hr class="border-slate-800">
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-pharaoh-gold uppercase tracking-wider">التكليفات والمسؤوليات الأساسية:</h4>
+                        <ul class="space-y-2 text-xs text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-0.5"></i> <span><strong>UI Architecture:</strong> إعداد هيكل التطبيق وتنسيق إدارة الحالة (State Management - BLoC/Redux).</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-0.5"></i> <span><strong>Module 2 & 4 UI:</strong> الشاشة الرئيسية، شاشة البحث، الفئات، وعرض تفاصيل المكان والمراجعات.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-0.5"></i> <span><strong>Module 5 & 9 UI:</strong> تصميم شاشة إدخال ميزانية الـ AI وشاشة شات البوت التفاعلية.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-400 mt-0.5"></i> <span><strong>Module 11 UI:</strong> شاشة الملف الشخصي، المفضلات، وحفلات وحجوزات السائح.</span></li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                        <strong class="text-slate-200">التقنيات الخاصة به:</strong> Flutter / React Native, Figma, Tailwind/Material Design, State Management.
+                    </div>
+                </div>
+
+                <!-- Member 5: Fullstack / Integrations Lead (CS 4) -->
+                <div class="team-card cs glass-panel p-6 rounded-2xl border border-slate-700 hover:border-pharaoh-gold/50 transition-all space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold">
+                            <i class="fas fa-plug-connect"></i> علوم حاسب 4
+                        </span>
+                        <span class="text-xs text-slate-500 font-mono">Integrations Lead</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-100">العضو 5: مهندس الخدمات والتكاملات</h3>
+                        <p class="text-xs text-slate-400 mt-1">ربط الخدمات الخارجية (الحجوزات، المرشدين، الخرائط، وبوابة الدفع)</p>
+                    </div>
+                    <hr class="border-slate-800">
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-pharaoh-gold uppercase tracking-wider">التكليفات والمسؤوليات الأساسية:</h4>
+                        <ul class="space-y-2 text-xs text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-400 mt-0.5"></i> <span><strong>Module 3 & 6 (Bookings/Events):</strong> منطق حجوزات الفنادق والتذاكر والفعاليات الجارية.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-400 mt-0.5"></i> <span><strong>Module 8 (Tour Guides):</strong> بناء سوق المرشدين السياحيين (الملفات، اللغات، والتقييم).</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-400 mt-0.5"></i> <span><strong>Module 7 (Food Discovery):</strong> اقتراحات الأكل والمطاعم الشعبية وسيارات الأكل الشارعي.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-400 mt-0.5"></i> <span><strong>Third-Party APIs:</strong> ربط Google Maps, Weather API, وبوابة الدفع الإلكتروني (Paymob/Stripe).</span></li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                        <strong class="text-slate-200">التقنيات الخاصة به:</strong> Stripe/Paymob APIs, Google Maps SDK, Weather API, RESTful Integration.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: PHASES ROADMAP ================= -->
+        <section id="view-phases" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-black gold-gradient-text">خطة التنفيذ المرحلية (Phases 0 to 5)</h2>
+                <p class="text-xs md:text-sm text-slate-400">مسار العمل المنظم خطوة بخطوة حتى تسليم مشروع الجودة والجامعة.</p>
+            </div>
+
+            <!-- Timeline Vertical Grid -->
+            <div class="space-y-6 relative before:absolute before:inset-0 before:left-auto before:right-4 md:before:right-1/2 before:w-0.5 before:bg-slate-800">
+                
+                <!-- Phase 0 -->
+                <div class="relative flex flex-col md:flex-row items-start group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-pharaoh-gold text-pharaoh-dark font-black text-sm absolute right-0 md:right-1/2 -translate-x-1/2 z-10 border-4 border-slate-900">
+                        0
+                    </div>
+                    <div class="w-full md:w-1/2 pr-12 md:pr-0 md:pl-8 mb-4 md:mb-0">
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-xs font-bold">المرحلة 0 (الأسبوع 1 - 2)</span>
+                                <span class="text-xs text-slate-400">التخطيط والتصميم</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-100">الإعداد وبناء المخططات (Setup & Diagrams)</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li>• إعداد مستودع Git/GitHub والاتفاق على Workflow الفروع.</li>
+                                <li>• رسم مخطط قاعدة البيانات ERD بـ 12 Entity (CS 2).</li>
+                                <li>• تصميم واجهات Figma الشاملة للتطبيق (CS 3).</li>
+                                <li>• إعداد وثيقة الأمان والمصادقة Architecture (Cyber).</li>
+                                <li>• قراءة توثيق LangChain و Gemini API للـ AI (CS 1).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 1 -->
+                <div class="relative flex flex-col md:flex-row items-start group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-blue-500 text-slate-900 font-black text-sm absolute right-0 md:right-1/2 -translate-x-1/2 z-10 border-4 border-slate-900">
+                        1
+                    </div>
+                    <div class="w-full md:w-1/2 mr-auto pl-0 md:pr-8">
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-300 text-xs font-bold">المرحلة 1 (الأسبوع 3 - 5)</span>
+                                <span class="text-xs text-slate-400">الأساسيات والـ MVP</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-100">النظام الأساسي واستعراض الأماكن</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li>• إنشاء نظام التسجيل والـ Authentication بـ JWT و OAuth (Cyber + CS 2).</li>
+                                <li>• بناء واجهات Home Dashboard و Places Explorer (CS 3).</li>
+                                <li>• إدخال بيانات الأماكن التاريخية والمتاحف في PostgreSQL (CS 2).</li>
+                                <li>• تجهيز قاعدة بيانات التاريخ لـ AI Knowledge Base (CS 1).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative flex flex-col md:flex-row items-start group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-emerald-500 text-slate-900 font-black text-sm absolute right-0 md:right-1/2 -translate-x-1/2 z-10 border-4 border-slate-900">
+                        2
+                    </div>
+                    <div class="w-full md:w-1/2 pr-12 md:pr-0 md:pl-8 mb-4 md:mb-0">
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-xs font-bold">المرحلة 2 (الأسبوع 6 - 8)</span>
+                                <span class="text-xs text-slate-400">الخدمات والتجارة</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-100">المرشدين، الفعاليات، ولوحة التحكم</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li>• إعداد سوق المرشدين السياحيين Tour Guides Marketplace (CS 4).</li>
+                                <li>• بناء موديول الفعاليات والمطاعم Food Discovery (CS 4 + CS 3).</li>
+                                <li>• بناء الـ Admin Dashboard لإضافة وتعديل الأماكن (CS 2 + Cyber RBAC).</li>
+                                <li>• ربط نظام التقييم والمراجعات Reviews (CS 2 + CS 3).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative flex flex-col md:flex-row items-start group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-purple-500 text-slate-900 font-black text-sm absolute right-0 md:right-1/2 -translate-x-1/2 z-10 border-4 border-slate-900">
+                        3
+                    </div>
+                    <div class="w-full md:w-1/2 mr-auto pl-0 md:pr-8">
+                        <div class="glass-panel p-5 rounded-2xl border border-purple-500/40 space-y-3 gold-border-glow">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-xs font-bold">المرحلة 3 (الأسبوع 9 - 12) ★ الأهم</span>
+                                <span class="text-xs text-slate-400">عقل الذكاء الاصطناعي</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-100">إطلاق ميزات الذكاء الاصطناعي</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li>• ربط **Smart Itinerary Generator** بـ (Budget, Time, Interests) (CS 1).</li>
+                                <li>• تفعيل الـ **AI Chatbot** بتقنية RAG للحضارة المصرية (CS 1).</li>
+                                <li>• تصميم الواجهات التفاعلية لعرض الـ Itinerary والـ Chatbot (CS 3).</li>
+                                <li>• فحص أمان الـ Prompts وحمايتها من Prompt Injection (Cyber).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="relative flex flex-col md:flex-row items-start group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-rose-500 text-slate-900 font-black text-sm absolute right-0 md:right-1/2 -translate-x-1/2 z-10 border-4 border-slate-900">
+                        4
+                    </div>
+                    <div class="w-full md:w-1/2 pr-12 md:pr-0 md:pl-8 mb-4 md:mb-0">
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded bg-rose-500/20 text-rose-300 text-xs font-bold">المرحلة 4 (الأسبوع 13 - 14)</span>
+                                <span class="text-xs text-slate-400">التأمين والتكامل</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-100">اختبار الأمان والدفع الإلكتروني</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li>• إجراء اختبار الاختراق Penetration Testing بواسطة مهندس السايبر (Cyber).</li>
+                                <li>• ربط بوابة الدفع Stripe / Paymob لشراء التذاكر والحجز (CS 4).</li>
+                                <li>• تحسين أداء الاستعلامات وسرعة الـ AI API Responses (CS 1 + CS 2).</li>
+                                <li>• إضافة الوضع الداكن وتلميع الـ UI/UX (CS 3).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 5 -->
+                <div class="relative flex flex-col md:flex-row items-start group">
+                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-pharaoh-gold text-pharaoh-dark font-black text-sm absolute right-0 md:right-1/2 -translate-x-1/2 z-10 border-4 border-slate-900">
+                        5
+                    </div>
+                    <div class="w-full md:w-1/2 mr-auto pl-0 md:pr-8">
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded bg-pharaoh-gold/20 text-pharaoh-gold text-xs font-bold">المرحلة 5 (الأسبوع 15 - 16)</span>
+                                <span class="text-xs text-slate-400">الإطلاق والتسليم</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-100">الرفع النهائي والعرض التقديمي</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li>• رفع الـ Backend وقاعدة البيانات على السحابة Production (CS 2).</li>
+                                <li>• استخراج ملف الـ APK النسخة النهائية وتجربتها (CS 3).</li>
+                                <li>• تقديم تقرير Security Compliance Report (Cyber).</li>
+                                <li>• تجهيز العرض التقديمي والفيديو التوضيحي (الجميع).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: MODULES & ERD ================= -->
+        <section id="view-modules" class="space-y-8 hidden">
+            
+            <!-- Section Title -->
+            <div>
+                <h2 class="text-2xl font-black gold-gradient-text">وحدات التطبيق (12 Modules) وجداول قاعدة البيانات (12 ERD Entities)</h2>
+                <p class="text-xs md:text-sm text-slate-400">التفاصيل الهيكلية والربط بين مكونات البروجكت المختلفة.</p>
+            </div>
+
+            <!-- Modules Breakdown Grid (12 Modules) -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold flex items-center gap-2 text-slate-200">
+                    <i class="fas fa-cubes text-pharaoh-gold"></i> الـ 12 Module الموجودة في التطبيق:
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                    
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-pharaoh-gold">
+                            <span>1. Authentication</span>
+                            <span class="text-[10px] bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded">Cyber / CS 2</span>
+                        </div>
+                        <p class="text-slate-300">Login, Signup, Forget Password, Google OAuth Login, Email Verification, JWT Token Refresh.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-emerald-400">
+                            <span>2. Home Dashboard</span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">CS 3</span>
+                        </div>
+                        <p class="text-slate-300">شريط البحث، الفئات، التوصيات المخصصة، حالة الطقس الحالية، والأماكن المميزة بالقرب من السائح.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-amber-400">
+                            <span>3. Booking Module</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">CS 4</span>
+                        </div>
+                        <p class="text-slate-300">حجوزات الفنادق، الرحلات السياحية، وتذاكر دخول الأماكن والمتاحف بالتكامل مع الدفع الإلكتروني.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-blue-400">
+                            <span>4. Places Explorer</span>
+                            <span class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded">CS 2 / CS 3</span>
+                        </div>
+                        <p class="text-slate-300">استعراض المتاحف، المعابد، الشواطئ، الحدائق، والمناطق التاريخية مع الصور، التقييم، وساعات العمل وخريطة الموقع.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-purple-500/40 space-y-2 gold-border-glow">
+                        <div class="flex items-center justify-between font-bold text-purple-300">
+                            <span>5. Smart Itinerary Generator ★</span>
+                            <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded">CS 1 (AI)</span>
+                        </div>
+                        <p class="text-slate-300">إدخال الميزانية + الأيام + الاهتمامات ⬅️ توليد خطة رحلة يومية متكاملة ومنطقية أوتوماتيكياً بواسطة الذكاء الاصطناعي.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-amber-400">
+                            <span>6. Events Module</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">CS 4</span>
+                        </div>
+                        <p class="text-slate-300">عرض الحفلات، المهرجانات، المعارض المتوفرة اليوم وفي هذا الأسبوع مع إمكانية حجز التذاكر.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-amber-400">
+                            <span>7. Food Discovery</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">CS 4</span>
+                        </div>
+                        <p class="text-slate-300">اقتراح المطاعم، الكافيهات، الأكل الشعبي، وأكل الشارع المصري بناءً على موقع السائح الحالي.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-amber-400">
+                            <span>8. Tour Guide Marketplace</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">CS 4</span>
+                        </div>
+                        <p class="text-slate-300">عرض المرشدين السياحيين المرخصين، التقييم، اللغات المتقنة، السعر، والتواصل المباشر والحجز.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-purple-500/40 space-y-2 gold-border-glow">
+                        <div class="flex items-center justify-between font-bold text-purple-300">
+                            <span>9. AI Assistant Chatbot</span>
+                            <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded">CS 1 (AI)</span>
+                        </div>
+                        <p class="text-slate-300">مساعد سياحي ذكي يجيب عن أسئلة السائح حول الآثار، تاريخ معبد الكرنك، أفضل وقت للزيارة، والأنشطة العائلية.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-blue-400">
+                            <span>10. Egypt Knowledge Library</span>
+                            <span class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded">CS 2 / CS 1</span>
+                        </div>
+                        <p class="text-slate-300">مكتبة ثقافة وحضارة الفراعنة، العادات المصرية، العبارات اللغوية الشائعة، والنصائح الثقافية للزوار.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-emerald-400">
+                            <span>11. User Profile</span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">CS 3</span>
+                        </div>
+                        <p class="text-slate-300">تعديل البيانات الشخصية، عرض الأماكن المفضلة Saved Favorites، متابعة الحجوزات، والخطط السابقة.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl glass-panel border border-rose-500/40 space-y-2">
+                        <div class="flex items-center justify-between font-bold text-rose-300">
+                            <span>12. Admin Dashboard</span>
+                            <span class="text-[10px] bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded">Cyber / CS 2</span>
+                        </div>
+                        <p class="text-slate-300">لوحة تحكم مشفّرة للإدارة: إضافة وتعديل وحذف الأماكن، الفعاليات، قبول المرشدين، ومتابعة الإحصائيات.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Database ERD Diagram Interactive Concept -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h3 class="text-lg font-bold flex items-center justify-between text-slate-200">
+                    <span class="flex items-center gap-2"><i class="fas fa-database text-blue-400"></i> قاعدة البيانات الشاملة (12 ERD Entities Map)</span>
+                    <span class="text-xs font-mono text-slate-400">Relational Schema (PostgreSQL)</span>
+                </h3>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
+                    
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">1. Users</div>
+                        <p class="text-[11px] text-slate-400">id, name, email, password_hash, role (tourist/guide/admin)</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">2. Attractions</div>
+                        <p class="text-[11px] text-slate-400">id, name, category, location, rating, opening_hours, images</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">3. Hotels</div>
+                        <p class="text-[11px] text-slate-400">id, name, city, stars, price_per_night, amenities, map_url</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">4. Restaurants</div>
+                        <p class="text-[11px] text-slate-400">id, name, cuisine_type, price_range, location, rating</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">5. Events</div>
+                        <p class="text-[11px] text-slate-400">id, title, date, venue, ticket_price, description, capacity</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">6. Bookings</div>
+                        <p class="text-[11px] text-slate-400">id, user_id, booking_type, target_id, amount, status, date</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">7. Reviews</div>
+                        <p class="text-[11px] text-slate-400">id, user_id, target_type, rating, comment, created_at</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">8. Favorites</div>
+                        <p class="text-[11px] text-slate-400">id, user_id, attraction_id, hotel_id, saved_at</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">9. Tour Guides</div>
+                        <p class="text-[11px] text-slate-400">id, user_id, languages, price_per_day, verified, bio</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-blue-400">10. User Preferences</div>
+                        <p class="text-[11px] text-slate-400">id, user_id, budget_range, favorite_activities, travel_style</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-purple-400">11. Itineraries</div>
+                        <p class="text-[11px] text-slate-400">id, user_id, days_count, total_budget, generated_json</p>
+                    </div>
+
+                    <div class="p-3 rounded-lg bg-slate-900 border border-slate-700 space-y-1">
+                        <div class="font-bold text-purple-400">12. AI Conversations</div>
+                        <p class="text-[11px] text-slate-400">id, user_id, prompt_text, response_text, vector_references</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: TOOLS & TECH STACK ================= -->
+        <section id="view-tools" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-black gold-gradient-text">التقنيات والأدوات الواجب معرفتها بالتفصيل</h2>
+                <p class="text-xs md:text-sm text-slate-400">الأدوات التقنية والمكتبات الموصى بها لكل دور في الفريق لبدء العمل بسلاسة.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Frontend Tech Stack -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-3 text-emerald-400">
+                        <i class="fas fa-mobile-screen-button text-2xl"></i>
+                        <h3 class="text-lg font-bold">1. تقنيات التطبيق والواجهات (Frontend Lead - CS 3)</h3>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-emerald-300">Flutter (Dart) أو React Native:</strong> لتطوير تطبيق متوافق مع Android و iOS بكود برمجي واحد.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-emerald-300">إدارة الحالة State Management:</strong> استخدام BLoC / Provider في Flutter أو Redux Toolkit في React Native.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-emerald-300">Figma:</strong> لتصميم وشرح نماذج الشاشات والـ UI Flow قبل تكويدها.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- AI / ML Tech Stack -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-3 text-purple-400">
+                        <i class="fas fa-brain text-2xl"></i>
+                        <h3 class="text-lg font-bold">2. تقنيات الذكاء الاصطناعي (AI Lead - CS 1)</h3>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-purple-300">Gemini API / OpenAI API:</strong> للتعامل مع النماذج اللغوية الضخمة وتوليد الجداول والردود.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-purple-300">LangChain / LlamaIndex:</strong> لإدارة سلسلة الـ Prompts وربط الـ Chatbot ببيانات خارجيه.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-purple-300">ChromaDB / PgVector:</strong> قواعد بيانات متجهية لتخزين تاريخ مصر وإجراء بحث تشابهي (Vector Search).
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Backend & DB Tech Stack -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-3 text-blue-400">
+                        <i class="fas fa-server text-2xl"></i>
+                        <h3 class="text-lg font-bold">3. تقنيات الخلفية والبيانات (Backend Lead - CS 2)</h3>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-blue-300">Python FastAPI / Node.js (Express):</strong> لإغلاق الـ Endpoints بسرعة وسهولة دمج الـ AI.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-blue-300">PostgreSQL + Prisma / SQLAlchemy ORM:</strong> للتعامل مع قاعدة البيانات الترابطية وسهولة الـ Migrations.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-blue-300">Docker & Cloud Hosting:</strong> حزم التطبيق ونشره على Render أو DigitalOcean أو AWS.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cybersecurity Tech Stack -->
+                <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-3 text-rose-400">
+                        <i class="fas fa-shield-halved text-2xl"></i>
+                        <h3 class="text-lg font-bold">4. تقنيات أمن المعلومات (Cybersecurity Lead)</h3>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-rose-300">JWT & OAuth 2.0:</strong> لتأمين جلسات المستخدمين وتفعيل تسجيل الدخول بـ Google.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-rose-300">Argon2 / Bcrypt & Encryption:</strong> لتشفير كلمات المرور والبيانات في التخزين والنقل.
+                        </li>
+                        <li class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                            <strong class="text-rose-300">OWASP ZAP / Burp Suite:</strong> لفحص ثغرات الـ API واختبار الاختراق قبل الإطلاق.
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 6: LEARNING ROADMAP ================= -->
+        <section id="view-learning" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-black gold-gradient-text">دليل التعلم والمذاكرة عند التعثر (Learning Roadmap)</h2>
+                <p class="text-xs md:text-sm text-slate-400">مبدأ المشروع "التعلم أثناء التنفيذ". عندما تقف معك جزئية، ارجع لهذا الدليل لمذاكرتها فوراً.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Cyber Study Plan -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
+                        <i class="fas fa-graduation-cap"></i> مذاكرة الأمن السيبراني (Cyber)
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2 rounded bg-slate-900">1. فهم آلية عمل JWT Access Tokens & Refresh Tokens.</li>
+                        <li class="p-2 rounded bg-slate-900">2. دراسة ثغرات OWASP API Security Top 10 وكيفية حماية Node/FastAPI منها.</li>
+                        <li class="p-2 rounded bg-slate-900">3. تطبيق Rate Limiting و CORS Headers.</li>
+                    </ul>
+                    <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                        📌 <strong>أفضل المصادر:</strong> OWASP Documentation, FreeCodeCamp API Security.
+                    </div>
+                </div>
+
+                <!-- AI Study Plan -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 text-purple-400 font-bold text-sm">
+                        <i class="fas fa-graduation-cap"></i> مذاكرة الذكاء الاصطناعي (AI CS 1)
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2 rounded bg-slate-900">1. فهم هندسة الأوامر Prompt Engineering وإرجاع إجابات بصيغة JSON.</li>
+                        <li class="p-2 rounded bg-slate-900">2. دراسة مفهوم RAG (Retrieval-Augmented Generation) مع Vector Embeddings.</li>
+                        <li class="p-2 rounded bg-slate-900">3. ربط LangChain أو LlamaIndex بـ Gemini API.</li>
+                    </ul>
+                    <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                        📌 <strong>أفضل المصادر:</strong> DeepLearning.AI Courses, LangChain Official Docs.
+                    </div>
+                </div>
+
+                <!-- Backend Study Plan -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 text-blue-400 font-bold text-sm">
+                        <i class="fas fa-graduation-cap"></i> مذاكرة الـ Backend والـ DB (CS 2)
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2 rounded bg-slate-900">1. تعلم Database Normalization و Indexing لزيادة السرعة.</li>
+                        <li class="p-2 rounded bg-slate-900">2. بناء REST API متكاملة مع Swagger Documentation تلقائي.</li>
+                        <li class="p-2 rounded bg-slate-900">3. أساسيات Docker وكيفية عمل Container لـ PostgreSQL و Backend.</li>
+                    </ul>
+                    <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                        📌 <strong>أفضل المصادر:</strong> Hussein Nasser YouTube, FastAPI/Express Official Docs.
+                    </div>
+                </div>
+
+                <!-- Frontend Study Plan -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                        <i class="fas fa-graduation-cap"></i> مذاكرة التطبيق والواجهات (CS 3)
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2 rounded bg-slate-900">1. احتراف التعامل مع HTTP Requests واستقبال الـ JSON API.</li>
+                        <li class="p-2 rounded bg-slate-900">2. إدارة حالة التطبيق (BLoC / Redux) للتطبيقات الكبيرة.</li>
+                        <li class="p-2 rounded bg-slate-900">3. دمج خرائط Google Maps وتحديد موقع المستخدم الحالي.</li>
+                    </ul>
+                    <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                        📌 <strong>أفضل المصادر:</strong> Reso Coder, Flutter/React Native Official Guides.
+                    </div>
+                </div>
+
+                <!-- Integrations Study Plan -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <i class="fas fa-graduation-cap"></i> مذاكرة الخدمات والتكامل (CS 4)
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li class="p-2 rounded bg-slate-900">1. الربط مع Stripe / Paymob APIs والتعامل مع Webhooks لتأكيد الحجز.</li>
+                        <li class="p-2 rounded bg-slate-900">2. استخدام OpenWeather API لجلب درجات الحرارة.</li>
+                        <li class="p-2 rounded bg-slate-900">3. إنشاء نظام الفلترة والبحث المتقدم في المطاعم والفعاليات.</li>
+                    </ul>
+                    <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                        📌 <strong>أفضل المصادر:</strong> Stripe Developer Portal, Postman Learning Center.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 7: AI SIMULATOR ================= -->
+        <section id="view-simulator" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-black gold-gradient-text">محاكي معمارية توليد رحلات الذكاء الاصطناعي (AI Simulator)</h2>
+                <p class="text-xs md:text-sm text-slate-400">تجربة تفاعلية توضح كيف سيقوم محرك الذكاء الاصطناعي (Module 5) بتحويل مدخلات السائح إلى جدول رحلة كامل.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Inputs Form -->
+                <div class="lg:col-span-5 glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <h3 class="text-base font-bold text-pharaoh-gold flex items-center gap-2">
+                        <i class="fas fa-sliders"></i> مدخلات السائح للتطبيق
+                    </h3>
+                    
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 mb-1 font-semibold">الميزانية المتاحة (Budget USD):</label>
+                            <input type="number" id="simBudget" value="1000" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-pharaoh-gold">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-300 mb-1 font-semibold">مدة الرحلة (بالأيام):</label>
+                            <select id="simDays" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-pharaoh-gold">
+                                <option value="3">3 أيام</option>
+                                <option value="5" selected>5 أيام</option>
+                                <option value="7">7 أيام</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-300 mb-1 font-semibold">الاهتمامات الرئيسية (Interests):</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center gap-2 bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer">
+                                    <input type="checkbox" id="intHistory" checked class="rounded accent-pharaoh-gold"> آثار وتاريخ
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer">
+                                    <input type="checkbox" id="intSea" checked class="rounded accent-pharaoh-gold"> بحر وشواطئ
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer">
+                                    <input type="checkbox" id="intFood" checked class="rounded accent-pharaoh-gold"> أكل شعبي
+                                </label>
+                                <label class="flex items-center gap-2 bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer">
+                                    <input type="checkbox" id="intShopping" class="rounded accent-pharaoh-gold"> تسوق وتسالي
+                                </label>
+                            </div>
+                        </div>
+
+                        <button onclick="runAiSimulation()" id="simBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-pharaoh-gold to-yellow-600 text-pharaoh-dark font-extrabold hover:opacity-90 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
+                            <i class="fas fa-wand-magic-sparkles"></i> تشغيل المحاكاة البرمجية
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Simulation Output -->
+                <div class="lg:col-span-7 glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-base font-bold text-slate-200 flex items-center gap-2">
+                            <i class="fas fa-code text-purple-400"></i> مخرجات الـ AI JSON المقترحة
+                        </h3>
+                        <span id="simStatus" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">في انتظار التشغيل</span>
+                    </div>
+
+                    <!-- Output Container -->
+                    <div id="simOutput" class="space-y-3 text-xs min-h-[250px] flex flex-col justify-center items-center text-slate-500">
+                        <i class="fas fa-robot text-4xl mb-2 text-slate-700"></i>
+                        <p>اضغط على "تشغيل المحاكاة البرمجية" لرؤية الجدول المولد من الـ AI.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800 mt-auto py-6 text-center text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+                🇪🇬 <strong>Smart Egypt Travel App</strong> - دليل الخطة الاستراتيجية والتوزيع العملي للمشروع
+            </div>
+            <div class="text-slate-500">
+                فريق من 5 أفراد (1 Cybersecurity + 4 CS Engineers)
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all views
+            const views = ['overview', 'team', 'phases', 'modules', 'tools', 'learning', 'simulator'];
+            views.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) el.classList.add('hidden');
+                
+                const tabBtn = document.getElementById(`tab-${v}`);
+                if (tabBtn) {
+                    tabBtn.classList.remove('active');
+                    tabBtn.classList.add('text-slate-300');
+                }
+            });
+
+            // Show selected view
+            const targetView = document.getElementById(`view-${tabId}`);
+            if (targetView) targetView.classList.remove('hidden');
+
+            const targetBtn = document.getElementById(`tab-${tabId}`);
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+                targetBtn.classList.remove('text-slate-300');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Team Filter Logic
+        function filterTeam(type) {
+            const cards = document.querySelectorAll('.team-card');
+            cards.forEach(card => {
+                if (type === 'all') {
+                    card.classList.remove('hidden');
+                } else if (type === 'cyber' && card.classList.contains('cyber')) {
+                    card.classList.remove('hidden');
+                } else if (type === 'cs' && card.classList.contains('cs')) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Update button styles
+            const btns = document.querySelectorAll('.team-filter-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('bg-pharaoh-gold', 'text-pharaoh-dark', 'font-bold');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            event.target.classList.add('bg-pharaoh-gold', 'text-pharaoh-dark', 'font-bold');
+            event.target.classList.remove('bg-slate-800', 'text-slate-300');
+        }
+
+        // AI Simulation Function
+        function runAiSimulation() {
+            const btn = document.getElementById('simBtn');
+            const status = document.getElementById('simStatus');
+            const output = document.getElementById('simOutput');
+
+            const budget = document.getElementById('simBudget').value;
+            const days = document.getElementById('simDays').value;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري استدعاء Gemini API للمعالجة...`;
+            status.className = "text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold";
+            status.innerText = "جاري توليد الخطة...";
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-wand-magic-sparkles"></i> إعادة المحاكاة البرمجية`;
+                status.className = "text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold";
+                status.innerText = "تم التوليد بنجاح ✔";
+
+                output.className = "space-y-4 text-xs text-slate-300";
+                output.innerHTML = `
+                    <div class="p-3 bg-purple-950/40 border border-purple-500/30 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center text-purple-300 font-bold">
+                            <span>ملخص الخطة السريعة الموَلّدة:</span>
+                            <span>الميزانية: $${budget} | المدة: ${days} أيام</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300">تم استجابة النموذج بتوزيع منطقي يحافظ على الميزانية المحددة ويغطي الجولات الرئيسية.</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 space-y-1">
+                            <div class="font-bold text-pharaoh-gold flex justify-between">
+                                <span>اليوم الأول: القاهرة الجيزة والآثار</span>
+                                <span class="text-slate-500 font-normal">صباحاً - مساءً</span>
+                            </div>
+                            <p class="text-slate-400">زيارة الأهرامات وأبو الهول ⬅️ الغداء في مطعم نجيب محفوظ ⬅️ جولة خان الخليلي والمعز.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 space-y-1">
+                            <div class="font-bold text-pharaoh-gold flex justify-between">
+                                <span>اليوم الثاني: المتحف المصري الكبير والوسط</span>
+                                <span class="text-slate-500 font-normal">صباحاً - مساءً</span>
+                            </div>
+                            <p class="text-slate-400">زيارة المتحف المصري الكبير (GEM) ⬅️ تجربة أكل كشري أبو طارق ⬅️ عشاء على باخرة نيلية.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 space-y-1">
+                            <div class="font-bold text-pharaoh-gold flex justify-between">
+                                <span>اليوم الثالث: البحر والأسترخاء (الأقصر/الغردقة)</span>
+                                <span class="text-slate-500 font-normal">رحلة داخلية</span>
+                            </div>
+                            <p class="text-slate-400">الطيران إلى الغردقة ⬅️ الاستجمام بالشاطئ ⬅️ عشاء ماكولات بحرية في المارينا.</p>
+                        </div>
+                    </div>
+
+                    <div class="text-[10px] text-slate-500 font-mono bg-slate-950 p-2 rounded border border-slate-800">
+                        Response JSON Payload Status: 200 OK | Processing Time: 1.2s | Tokens Used: 420
+                    </div>
+                `;
+            }, 1200);
+        }
+
+        // Mobile Nav Toggle
+        document.getElementById('mobileNavToggle')?.addEventListener('click', function() {
+            const container = document.getElementById('navTabsContainer');
+            container.classList.toggle('flex-wrap');
+        });
+    </script>
+</body>
+</html>
