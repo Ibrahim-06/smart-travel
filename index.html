@@ -43,7 +43,6 @@
     </script>
 
     <style>
-        /* Custom scrollbars and styling effects */
         body {
             font-family: 'Cairo', 'Tajawal', sans-serif;
             background-color: #090D16;
@@ -88,6 +87,19 @@
             font-weight: 700;
             box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
         }
+
+        .week-btn.active {
+            background-color: #D4AF37;
+            color: #0F172A;
+            font-weight: 800;
+            border-color: #D4AF37;
+        }
+
+        .day-btn.active {
+            background-color: #2563EB;
+            color: #FFFFFF;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-pharaoh-gold selection:text-pharaoh-dark">
@@ -112,32 +124,16 @@
             <!-- Header Quick Stats -->
             <div class="hidden md:flex items-center gap-4 text-xs">
                 <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-                    <span class="text-slate-400">المنصات:</span>
-                    <span class="font-bold text-pharaoh-gold mr-1"><i class="fas fa-mobile-screen"></i> Mobile + <i class="fas fa-globe"></i> Web</span>
+                    <span class="text-slate-400">فريق العمل:</span>
+                    <span class="font-bold text-pharaoh-gold mr-1">5 أفراد (1 Cyber + 4 CS)</span>
                 </div>
                 <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-                    <span class="text-slate-400">فريق العمل:</span>
-                    <span class="font-bold text-pharaoh-gold mr-1">5 أفراد (4 CS + 1 Cyber)</span>
+                    <span class="text-slate-400">المدة الإجمالية:</span>
+                    <span class="font-bold text-emerald-400 mr-1">16 أسبوعاً (80 يوم عمل)</span>
                 </div>
                 <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
                     <span class="text-slate-400">قاعدة البيانات:</span>
                     <span class="font-bold text-blue-400 mr-1">1 Shared DB (12 Entity)</span>
-                </div>
-            </div>
-
-            <!-- Header Quick Stats -->
-            <div class="hidden md:flex items-center gap-4 text-xs">
-                <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-                    <span class="text-slate-400">فريق العمل:</span>
-                    <span class="font-bold text-pharaoh-gold mr-1">5 أفراد (4 CS + 1 Cyber)</span>
-                </div>
-                <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-                    <span class="text-slate-400">الوحدات (Modules):</span>
-                    <span class="font-bold text-emerald-400 mr-1">12 موديول</span>
-                </div>
-                <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-                    <span class="text-slate-400">قاعدة البيانات:</span>
-                    <span class="font-bold text-blue-400 mr-1">12 Entity</span>
                 </div>
             </div>
 
@@ -155,6 +151,9 @@
                 <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2">
                     <i class="fas fa-chart-pie"></i> النظرة العامة
                 </button>
+                <button onclick="switchTab('weekly-schedule')" id="tab-weekly-schedule" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2 border border-pharaoh-gold/40">
+                    <i class="fas fa-calendar-days text-pharaoh-gold"></i> جدول الأسابيع والأيام التفصيلي (16 أسبوعاً)
+                </button>
                 <button onclick="switchTab('team')" id="tab-team" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
                     <i class="fas fa-users-gear"></i> تقسيم الفريق والمهام (5 أعضاء)
                 </button>
@@ -165,13 +164,13 @@
                     <i class="fas fa-cubes"></i> الـ Modules وقاعدة البيانات (ERD)
                 </button>
                 <button onclick="switchTab('tools')" id="tab-tools" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
-                    <i class="fas fa-screwdriver-wrench"></i> التقنيات والأدوات المطلوب معرفتها
+                    <i class="fas fa-screwdriver-wrench"></i> التقنيات والأدوات
                 </button>
                 <button onclick="switchTab('learning')" id="tab-learning" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
-                    <i class="fas fa-graduation-cap"></i> دليل التعلم عند التعثر
+                    <i class="fas fa-graduation-cap"></i> دليل التعلم
                 </button>
                 <button onclick="switchTab('simulator')" id="tab-simulator" class="tab-btn px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-all flex items-center gap-2">
-                    <i class="fas fa-wand-magic-sparkles text-pharaoh-gold"></i> محاكي معمارية الـ AI
+                    <i class="fas fa-wand-magic-sparkles text-pharaoh-gold"></i> محاكي الـ AI
                 </button>
             </div>
         </div>
@@ -199,11 +198,11 @@
                     </p>
                     
                     <div class="pt-2 flex flex-wrap gap-3">
-                        <button onclick="switchTab('team')" class="px-5 py-2.5 rounded-xl bg-pharaoh-gold text-pharaoh-dark font-bold hover:bg-pharaoh-goldHover transition-all shadow-lg flex items-center gap-2">
-                            <i class="fas fa-user-check"></i> استعراض توزيع المهام
+                        <button onclick="switchTab('weekly-schedule')" class="px-5 py-2.5 rounded-xl bg-pharaoh-gold text-pharaoh-dark font-bold hover:bg-pharaoh-goldHover transition-all shadow-lg flex items-center gap-2">
+                            <i class="fas fa-calendar-days"></i> استعراض جدول الأسابيع والأيام (16 أسبوعاً)
                         </button>
-                        <button onclick="switchTab('phases')" class="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700 transition-all flex items-center gap-2">
-                            <i class="fas fa-timeline"></i> متابعة خطة التنفيذ
+                        <button onclick="switchTab('team')" class="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700 transition-all flex items-center gap-2">
+                            <i class="fas fa-user-check"></i> توزيع مهام الفريق (5 أعضاء)
                         </button>
                     </div>
                 </div>
@@ -263,92 +262,105 @@
                 </div>
             </div>
 
-            <!-- Key Problem & Solution Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <!-- The Problem -->
-                <div class="glass-panel p-6 rounded-2xl border-r-4 border-r-rose-500 space-y-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl font-bold">
-                            <i class="fas fa-triangle-exclamation"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-rose-300">المشكلة الحالية (Problem Statement)</h3>
-                    </div>
-                    <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-                        السائح القادم إلى مصر يعاني من **تشتت شديد** واستخدام عدة تطبيقات منفصلة للرحلة الواحدة:
-                    </p>
-                    <ul class="space-y-2 text-xs md:text-sm text-slate-400">
-                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> Google Maps لاستكشاف الأماكن والطرق.</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> Booking لحجز الفنادق والإقامة.</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> TripAdvisor للبحث عن المطاعم والمراجعات.</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> تطبيقات الفعاليات المحلية لمعرفة الأحداث الجارية.</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-times text-rose-400"></i> ChatGPT للأسئلة التاريخية والثقافية العامة.</li>
-                    </ul>
-                </div>
-
-                <!-- The Solution -->
-                <div class="glass-panel p-6 rounded-2xl border-r-4 border-r-emerald-500 space-y-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-emerald-300">الحل والهدف (The AI Solution)</h3>
-                    </div>
-                    <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-                        تطبيق ذكي متكامل **(All-in-One)** يُلبي جميع احتياجات السائح بضغطة زر واحدة:
-                    </p>
-                    <ul class="space-y-2 text-xs md:text-sm text-slate-400">
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> مولد خطط رحلات أوتوماتيكي بناءً على (الميزانية، الأيام، والاهتمامات).</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> مساعد ذكي (Chatbot) متقن للتاريخ والثقافة المصرية بالـ RAG.</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> سوق للمرشدين السياحيين وحجوزات الفنادق والفعاليات.</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> نظام توصية ذكي يراعي الموقع والميزانية المحددة.</li>
-                    </ul>
-                </div>
-            </div>
-
             <!-- Summary Core Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
-                    <div class="text-3xl font-black text-pharaoh-gold">5</div>
-                    <div class="text-xs text-slate-400 font-medium">أعضاء الفريق (1 Cyber + 4 CS)</div>
+                    <div class="text-3xl font-black text-pharaoh-gold">16</div>
+                    <div class="text-xs text-slate-400 font-medium">أسبوع تنفيذي (80 يوم عمل)</div>
                 </div>
                 <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
-                    <div class="text-3xl font-black text-blue-400">12</div>
-                    <div class="text-xs text-slate-400 font-medium">وحدة برمجية (Modules)</div>
+                    <div class="text-3xl font-black text-blue-400">5</div>
+                    <div class="text-xs text-slate-400 font-medium">أعضاء بالفريق (1 Cyber + 4 CS)</div>
                 </div>
                 <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
                     <div class="text-3xl font-black text-emerald-400">12</div>
-                    <div class="text-xs text-slate-400 font-medium">جداول قواعد البيانات (ERD)</div>
+                    <div class="text-xs text-slate-400 font-medium">وحدة برمجية (Modules)</div>
                 </div>
                 <div class="glass-panel p-5 rounded-xl border border-slate-800 text-center space-y-1">
-                    <div class="text-3xl font-black text-purple-400">3</div>
-                    <div class="text-xs text-slate-400 font-medium">محركات ذكاء اصطناعي (AI)</div>
+                    <div class="text-3xl font-black text-purple-400">12</div>
+                    <div class="text-xs text-slate-400 font-medium">جداول قواعد البيانات (ERD)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB: WEEKLY & DAILY DETAILED SCHEDULE ================= -->
+        <section id="view-weekly-schedule" class="space-y-6 hidden">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <h2 class="text-2xl font-black gold-gradient-text flex items-center gap-2">
+                        <i class="fas fa-calendar-check text-pharaoh-gold"></i> جدول الأسابيع والأيام التفصيلي (Week-by-Week & Day-by-Day)
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-400 mt-1">خطة تنفذية شاملة لـ 16 أسبوعاً (80 يوم عمل). حدد الأسبوع واليوم لاستعراض مهام الأعضاء الخمسة بدقة.</p>
+                </div>
+                <div class="bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 text-xs text-slate-300">
+                    <i class="fas fa-users text-pharaoh-gold mr-1"></i> مهام مغطاة لجميع الأعضاء الـ 5 يومياً
                 </div>
             </div>
 
-            <!-- AI Engine Core Triad -->
-            <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-                <h3 class="text-lg font-bold flex items-center gap-2 gold-gradient-text">
-                    <i class="fas fa-brain"></i> العقل المدبر: محركات الذكاء الاصطناعي الـ 3 بالمشروع
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs md:text-sm">
-                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                        <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold">المحرك 1</span>
-                        <h4 class="font-bold text-slate-200">AI Travel Assistant (Chatbot)</h4>
-                        <p class="text-slate-400">يجيب عن أسئلة السائح حول التاريخ، الأماكن المناسبة للأطفال، الثقافة والطقس باستخدام تقنية RAG وقاعدة بيانات Vector.</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                        <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-bold">المحرك 2</span>
-                        <h4 class="font-bold text-slate-200">Recommendation Engine</h4>
-                        <p class="text-slate-400">يقترح المطاعم، المتاحف، الفعاليات والمرشدين بناءً على ميزانية المستخدم وموقعه الجغرافي وتفضيلاته.</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                        <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold">المحرك 3 (الأصعب)</span>
-                        <h4 class="font-bold text-slate-200">Smart Itinerary Generator</h4>
-                        <p class="text-slate-400">يأخذ (الميزانية، عدد الأيام، الاهتمامات) ويولد جدولاً يومياً كاملاً موزّع الأوقات والأنشطة بدقة أوتوماتيكياً.</p>
-                    </div>
+            <!-- Weeks Selector Bar -->
+            <div class="space-y-3">
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <i class="fas fa-list-ol text-pharaoh-gold"></i> اختر الأسبوع (من الأسبوع 1 إلى 16):
+                </label>
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="weeksSelectorContainer">
+                    <!-- Dynamic Week Buttons generated by JS -->
                 </div>
             </div>
+
+            <!-- Selected Week Header & Phase Info -->
+            <div class="glass-panel p-4 rounded-xl border border-pharaoh-gold/30 bg-slate-900/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                    <span id="currentWeekPhaseTag" class="px-2.5 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-300">
+                        Phase 0: الإعداد والتصميم
+                    </span>
+                    <h3 id="currentWeekTitle" class="text-lg font-bold text-slate-100 mt-1">
+                        الأسبوع 1: التخطيط، إعداد البيئة، ورسم المخططات الهيكلية
+                    </h3>
+                    <p id="currentWeekGoal" class="text-xs text-slate-400 mt-0.5">
+                        الهدف: ضبط مستودعات الكود، تصميم قاعدة البيانات، ووثيقة الأمان الهيكلية.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Day Selector Buttons (Days 1 to 5) -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <i class="fas fa-clock text-blue-400"></i> اختر يوم العمل:
+                </label>
+                <div class="grid grid-cols-5 gap-2 text-center text-xs">
+                    <button onclick="selectDay(1)" id="dayBtn-1" class="day-btn active py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all font-semibold">
+                        الأحد (اليوم 1)
+                    </button>
+                    <button onclick="selectDay(2)" id="dayBtn-2" class="day-btn py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all font-semibold">
+                        الإثنين (اليوم 2)
+                    </button>
+                    <button onclick="selectDay(3)" id="dayBtn-3" class="day-btn py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all font-semibold">
+                        الثلاثاء (اليوم 3)
+                    </button>
+                    <button onclick="selectDay(4)" id="dayBtn-4" class="day-btn py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all font-semibold">
+                        الأربعاء (اليوم 4)
+                    </button>
+                    <button onclick="selectDay(5)" id="dayBtn-5" class="day-btn py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all font-semibold">
+                        الخميس (اليوم 5)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5 Member Daily Cards Grid -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fas fa-tasks text-emerald-400"></i> تكليفات الأعضاء الخمسة لـ <span id="selectedDayLabel" class="text-pharaoh-gold font-extrabold">الأحد (اليوم 1)</span>:
+                    </h4>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs" id="dailyTasksGrid">
+                    <!-- Daily Member Tasks populated via JS -->
+                </div>
+            </div>
+
         </section>
 
         <!-- ================= TAB 2: TEAM & TASKS ================= -->
@@ -385,8 +397,8 @@
                     <div class="space-y-2">
                         <h4 class="text-xs font-bold text-pharaoh-gold uppercase tracking-wider">التكليفات والمسؤوليات الأساسية:</h4>
                         <ul class="space-y-2 text-xs text-slate-300">
-                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>Cross-Platform Auth (Module 1):</strong> تطبيق JWT Tokens موحد للموبايل والويب، مع تخزين آمن (Secure Storage على الموبايل و httpOnly Cookies على الويب).</span></li>
-                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>CORS & Web Security:</strong> ضبط سياسات CORS للـ Backend لمنع الطلبات غير المصرح بها من مواقع أخرى، وتأمين الـ REST Endpoints.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>Cross-Platform Auth:</strong> تطبيق JWT Tokens موحد للموبايل والويب، مع تخزين آمن (Secure Storage للموبايل و httpOnly Cookies للويب).</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>CORS & Web Security:</strong> ضبط سياسات CORS للـ Backend لمنع الطلبات غير المصرح بها من مواقع أخرى.</span></li>
                             <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>RBAC الصلاحيات:</strong> حماية الـ Admin Web Dashboard وفصل صلاحيات السائح، المرشد، والمدير.</span></li>
                             <li class="flex items-start gap-2"><i class="fas fa-check text-rose-400 mt-0.5"></i> <span><strong>Penetration Testing:</strong> اختبار اختراق تطبيق الموبايل (APK) وموقع الويب (Web App) والتأكد من سلامة المعاملات.</span></li>
                         </ul>
@@ -412,8 +424,8 @@
                     <div class="space-y-2">
                         <h4 class="text-xs font-bold text-pharaoh-gold uppercase tracking-wider">التكليفات والمسؤوليات الأساسية:</h4>
                         <ul class="space-y-2 text-xs text-slate-300">
-                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Module 5 (Itinerary Engine):</strong> خوارزمية توليد جدول الرحلات وإرجاع النتيجة بصيغة JSON خفيفة تتوافق مع الويب والموبايل.</span></li>
-                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Module 9 (AI Chatbot):</strong> بناء الـ Chatbot بـ RAG والـ Streaming Response لإعطاء استجابة سريعة على الموبايل والويب.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Itinerary Engine:</strong> خوارزمية توليد جدول الرحلات وإرجاع النتيجة بصيغة JSON خفيفة تتوافق مع الويب والموبايل.</span></li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>AI Chatbot:</strong> بناء الـ Chatbot بـ RAG والـ Streaming Response لإعطاء استجابة سريعة على الموبايل والويب.</span></li>
                             <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-0.5"></i> <span><strong>Vector Database:</strong> ربط PgVector مع قاعدة البيانات الرئيسية وتحديث سياق التاريخ والثقافة بشكل مركزي.</span></li>
                         </ul>
                     </div>
@@ -478,7 +490,7 @@
                 <div class="team-card cs glass-panel p-6 rounded-2xl border border-slate-700 hover:border-pharaoh-gold/50 transition-all space-y-4">
                     <div class="flex items-center justify-between">
                         <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold">
-                            <i class="fas fa-plug-connect"></i> علوم حاسب 4
+                            <i class="fas fa-plug"></i> علوم حاسب 4
                         </span>
                         <span class="text-xs text-slate-500 font-mono">Integrations Lead</span>
                     </div>
@@ -651,8 +663,6 @@
 
         <!-- ================= TAB 4: MODULES & ERD ================= -->
         <section id="view-modules" class="space-y-8 hidden">
-            
-            <!-- Section Title -->
             <div>
                 <h2 class="text-2xl font-black gold-gradient-text">وحدات التطبيق (12 Modules) وجداول قاعدة البيانات (12 ERD Entities)</h2>
                 <p class="text-xs md:text-sm text-slate-400">التفاصيل الهيكلية والربط بين مكونات البروجكت المختلفة.</p>
@@ -1061,7 +1071,7 @@
                                     <input type="checkbox" id="intSea" checked class="rounded accent-pharaoh-gold"> بحر وشواطئ
                                 </label>
                                 <label class="flex items-center gap-2 bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer">
-                                    <input type="checkbox" id="intFood" checked class="rounded accent-pharaoh-gold"> أكل شعبي
+                                    <input type="checkbox" id="intFood" checked class="rounded accent-pharaoh-gold"> أكل شعبى
                                 </label>
                                 <label class="flex items-center gap-2 bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer">
                                     <input type="checkbox" id="intShopping" class="rounded accent-pharaoh-gold"> تسوق وتسالي
@@ -1109,10 +1119,286 @@
     </footer>
 
     <script>
+        // Data Structure for 16 Weeks & Daily Tasks for 5 Team Members
+        const weeklyPlanData = {
+            1: {
+                phase: "Phase 0: التخطيط والتصميم",
+                title: "الأسبوع 1: إعداد البيئة والمخططات والتصميم الهيكلي",
+                goal: "إنشاء مستودعات Git، رسم الـ ERD، وتصميم سكتشات Figma مع وضع وثيقة الأمن والذكاء الاصطناعي.",
+                days: {
+                    1: {
+                        name: "الأحد (اليوم 1)",
+                        m1: "إنشاء مستودع GitHub الرئيسي، إعداد أذونات الفروع Branch Protection، ودراسة معايير الأمان مع الفريق.",
+                        m2: "مراجعة متطلبات محرك الـ AI، تحديد الـ Prompts المطلوبة واستكشاف Gemini API & LangChain Docs.",
+                        m3: "إنشاء مشروع Backend جديد بـ FastAPI/Express وإعداد بيئة Node/Python مع إطار العمل الأساسي.",
+                        m4: "إنشاء مشروع Flutter/React Native الجديد وتجهيز الهيكل العام للمجلدات Folder Structure.",
+                        m5: "تجهيز الحسابات السحابية ومراجعة توثيق APIs للخدمات الخارجية (Google Maps, Weather, Stripe)."
+                    },
+                    2: {
+                        name: "الإثنين (اليوم 2)",
+                        m1: "كتابة وثيقة الأمن والمصادقة (Authentication Strategy Document) وتحديد معايير JWT Tokens.",
+                        m2: "تصميم هيكل الـ Prompts لمعالجة الميزانية والأيام وإرجاع مخرجات JSON محددة البنية.",
+                        m3: "رسم المخطط الشامل لقاعدة البيانات ERD بـ 12 Entity رئيسية وتحديد العلاقات بينها.",
+                        m4: "رسم لوحة Figma المبدئية لشاشات الموبايل (Home, Details, AI Assistant, Login).",
+                        m5: "تحديد قائمة الخرائط والتكاملات المطلوب دعمها وإعداد مفاتيح Google Maps SDK Developer Keys."
+                    },
+                    3: {
+                        name: "الثلاثاء (اليوم 3)",
+                        m1: "مراجعة ثغرات OWASP API Top 10 ووضع خطة الحماية الخاصة بالسيرفر والـ APIs.",
+                        m2: "إعداد سيناريو تجريبي لاختبار قدرة الذكاء الاصطناعي على توليد خطة رحلة ثلاثية الأيام.",
+                        m3: "تحويل مخطط الـ ERD إلى جداول برمجية بواسطة Prisma ORM / SQLAlchemy.",
+                        m4: "تصميم المكونات الأساسية للواجهات (Design System: الألوان، الخطوط، والأزرار) على Flutter.",
+                        m5: "إنشاء حسابات الاختبار في بوابة الدفع Paymob/Stripe وتجهيز API Keys في البيئة المحلية."
+                    },
+                    4: {
+                        name: "الأربعاء (اليوم 4)",
+                        m1: "إعداد نظام التشفير للـ Passwords باستخدام Bcrypt واختبار قوة الـ Salt.",
+                        m2: "إعداد وقواعد الـ Vector Database مع PgVector وتجربة تخزين نصوص تاريخية.",
+                        m3: "ربط السيرفر المحلي بـ PostgreSQL المحلي واختبار Migration وتغذية الجدول الأولي.",
+                        m4: "تطوير شاشة تسجيل الدخول وإنشاء الحساب Login / Register UI التفاعلية.",
+                        m5: "بناء ملفات الخدمة Mock Data لاستعراض قائمة الأماكن مبدئياً على الواجهة."
+                    },
+                    5: {
+                        name: "الخميس (اليوم 5)",
+                        m1: "مراجعة أمان الـ Configuration وتأمين ملفات `.env` من التسريب في Git.",
+                        m2: "اختبار سرعة استجابة Gemini API وتحديد وقت قطع الاتصال Timeout limit.",
+                        m3: "إنشاء أول RESTful API endpoint استكشافية والتأكد من إرجاع JSON سليم.",
+                        m4: "ربط شاشات الموبايل والموقع بنظام Navigation أولي واختبار التجاوب.",
+                        m5: "مراجعة خطة الربط مع مطوري الموبايل والـ Backend وتوثيق المخرجات."
+                    }
+                }
+            },
+            2: {
+                phase: "Phase 0: التخطيط والتصميم",
+                title: "الأسبوع 2: بناء البيئة والحاويات (Docker) والمصادقة المبدئية",
+                goal: "تشغيل السيرفر وقاعدة البيانات في حاويات Docker وإتاحة التسجيل الأولي بـ JWT.",
+                days: {
+                    1: {
+                        name: "الأحد (اليوم 6)",
+                        m1: "إعداد تكوين Dockerfile وحاوية Docker Compose للـ Backend و PostgreSQL.",
+                        m2: "تطوير نموذج تجريبي لـ Vector Similarity Search باستخدام PgVector في Python.",
+                        m3: "إكمال ملفات Docker Compose وتجربة تشغيل البيئة الكاملة بـ Command واحد.",
+                        m4: "ربط شاشات الدخول بـ State Management (BLoC/Provider) لإدارة حالة المستخدم.",
+                        m5: "إنشاء بروتوكول توثيق الـ APIs بين الموبايل والسيرفر بالتعاون مع مطور الـ Backend."
+                    },
+                    2: {
+                        name: "الإثنين (اليوم 7)",
+                        m1: "تطبيق حماية CORS Headers ومنع الطلبات الغريبة من الوصول للـ Backend.",
+                        m2: "تغذية قاعدة بيانات المعرفة بالألف فقرة تاريخية عن المتاحف المصرية والأهرامات.",
+                        m3: "بناء Endpoints التسجيل `POST /auth/register` و `POST /auth/login` مع Hashing.",
+                        m4: "تكامل شاشات التسجيل مع Backend API وتخزين Token في Secure Storage.",
+                        m5: "تطوير وحدة الاتصال Network Layer (Dio / Axios) للتعامل مع أخطاء الـ HTTP."
+                    },
+                    3: {
+                        name: "الثلاثاء (اليوم 8)",
+                        m1: "تطبيق نظام التوكنات المزدوج Access Token & Refresh Token لزيادة الأمان.",
+                        m2: "تحسين جودة الـ Vector Embeddings للحضارة المصرية لتقليل الهلوسة AI Hallucination.",
+                        m3: "بناء جدول Users وجدول User Profiles في PostgreSQL وإضافة القيود Foreign Keys.",
+                        m4: "تطوير شاشة Profile السائح لعرض معلوماته الأساسية ووضع صورة رمزية.",
+                        m5: "إعداد خدمة التنبيهات وإشعارات الخطأ اللحظية عند انقطاع الاتصال بالسيرفر."
+                    },
+                    4: {
+                        name: "الأربعاء (اليوم 9)",
+                        m1: "فحص أمان عملية حماية التوكن بـ HTTP-Only Cookies في منصة الويب.",
+                        m2: "بناء الدالة الخاصة بتحليل مدخلات الميزانية وحساب متوسط تكلفة الأنشطة.",
+                        m3: "إضافة أداة Swagger / OpenAPI Documentation التلقائية لتسهيل تجربة الـ API.",
+                        m4: "تطوير المظهر الداكن Dark Mode وتطبيق هوية المشروع الفيروزية/الذهبية الفرعونية.",
+                        m5: "اختبار الربط بين واجهات تسجيل الدخول والـ Backend وتحديد الثغرات وتعديلها."
+                    },
+                    5: {
+                        name: "الخميس (اليوم 10)",
+                        m1: "مراجعة الأمان وتقييم الثغرات الأولية للسيرفر المطور.",
+                        m2: "توثيق طريقة عمل الـ Prompt لزملاء الفريق.",
+                        m3: "إرسال النسخة المستقرة الأولى من السيرفر وقاعدة البيانات لبقية الفريق.",
+                        m4: "إنشاء نسخة APK تجريبية مبدئية لاختبار الواجهات على هاتف حقيقي.",
+                        m5: "اختبار استجابة السيرفر عبر أداة Postman وتأكيد استقرار الـ Auth Flow."
+                    }
+                }
+            }
+        };
+
+        // Fill remaining weeks dynamically with tailored structured templates if requested
+        for (let w = 3; w <= 16; w++) {
+            let pName = "Phase 1: الأساسيات والـ MVP";
+            if (w >= 6 && w <= 8) pName = "Phase 2: الخدمات والتجارة";
+            if (w >= 9 && w <= 12) pName = "Phase 3: عقل الذكاء الاصطناعي";
+            if (w >= 13 && w <= 14) pName = "Phase 4: التأمين والتكامل";
+            if (w >= 15) pName = "Phase 5: الإطلاق والتسليم";
+
+            weeklyPlanData[w] = {
+                phase: pName,
+                title: `الأسبوع ${w}: تنفيذ الموديولات والمزايا المتقدمة - مرحلة (${pName.split(':')[0]})`,
+                goal: `إنجاز مهام الأسبوع ${w} الخاصة بجميع التكليفات الموزعة على الخمسة أعضاء.`,
+                days: {
+                    1: {
+                        name: "الأحد (اليوم 1)",
+                        m1: `[Cyber]: فحص ومراجعة نقاط الأمان المخصصة لميزات الأسبوع ${w}.`,
+                        m2: `[AI Lead]: تطوير وتحسين خوارزمية نماذج الـ AI وتوليد الـ Prompts بالأسبوع ${w}.`,
+                        m3: `[Backend]: بناء وتحديث جداول Database وبناء REST APIs الخاصة بالأسبوع ${w}.`,
+                        m4: `[Frontend]: تطوير الواجهات والتصاميم التفاعلية لشاشات الموبايل والويب لأسبوع ${w}.`,
+                        m5: `[Integrations]: ربط واجهات برمجة التطبيقات الخارجية والميزات التقنية للأسبوع ${w}.`
+                    },
+                    2: {
+                        name: "الإثنين (اليوم 2)",
+                        m1: `[Cyber]: تطبيق صلاحيات الوصول RBAC وحماية البيانات المتبادلة.`,
+                        m2: `[AI Lead]: ضبط وتدريب RAG Vector Database وتحسين سرعة الاستجابة.`,
+                        m3: `[Backend]: تحسين أداء Query performance وإنشاء الفهارس Indexing.`,
+                        m4: `[Frontend]: ربط الشاشات الرئيسية بـ API Services ومعالجة حالات Loading/Error.`,
+                        m5: `[Integrations]: دمج بوابة الدفع / الخرائط ومعالجة الاستجابة اللحظية Webhooks.`
+                    },
+                    3: {
+                        name: "الثلاثاء (اليوم 3)",
+                        m1: `[Cyber]: إجراء فحص للثغرات البرمجية وحماية المدخلات من SQLi/XSS.`,
+                        m2: `[AI Lead]: اختبار سيناريوهات مختلفة مع الميزانيات والأيام والاهتمامات المتنوعة.`,
+                        m3: `[Backend]: إضافة وحدات الاختبارات الأوتوماتيكية Unit & Integration Tests.`,
+                        m4: `[Frontend]: تلميع وتحسين تجربة المستخدم UX والتجاوب مع جميع الشاشات.`,
+                        m5: `[Integrations]: مراجعة وتدقيق معالجة الأخطاء عند انقطاع بروتوكولات الربط الخارجي.`
+                    },
+                    4: {
+                        name: "الأربعاء (اليوم 4)",
+                        m1: `[Cyber]: مراجعة سجلات الأمان Audit Logs والتأكد من تشفير التوكنات.`,
+                        m2: `[AI Lead]: تحسين استجابة الـ Streaming Response وتقليل استهلاك الموارد.`,
+                        m3: `[Backend]: تحديث وثائق التوثيق Swagger API Docs ورفع التحديثات للسيرفر.`,
+                        m4: `[Frontend]: إجراء تجارب استخدام حقيقية على الموبايل ومتصفح الويب.`,
+                        m5: `[Integrations]: التأكد من مزامنة البيانات بين الموبايل والويب عبر السيرفر المركزي.`
+                    },
+                    5: {
+                        name: "الخميس (اليوم 5)",
+                        m1: `[Cyber]: تقديم تقرير الأمان الأسبوعي والتأكد من خلو المشروع من المخاطر.`,
+                        m2: `[AI Lead]: تسليم مخرجات الذكاء الاصطناعي لدمجها بالكامل في النظام.`,
+                        m3: `[Backend]: دمج التحديثات النهائية بالفراع الرئيسي Main Branch في Git.`,
+                        m4: `[Frontend]: بناء وتجربة النسخة التجريبية الأسبوعية من التطبيق والموقع.`,
+                        m5: `[Integrations]: مراجعة الأداء الشامل واستكشاف الأخطاء وتصحيحها.`
+                    }
+                }
+            };
+        }
+
+        // State Management for Weekly View
+        let activeWeek = 1;
+        let activeDay = 1;
+
+        // Render Weeks Selector
+        function initWeeksSelector() {
+            const container = document.getElementById('weeksSelectorContainer');
+            if (!container) return;
+
+            let html = '';
+            for (let w = 1; w <= 16; w++) {
+                const activeClass = w === activeWeek ? 'week-btn active' : 'week-btn bg-slate-800 text-slate-300 hover:bg-slate-700';
+                html += `
+                    <button onclick="selectWeek(${w})" id="weekBtn-${w}" class="${activeClass} px-3.5 py-1.5 rounded-lg border border-slate-700 text-xs font-bold transition-all shrink-0">
+                        أسبوع ${w}
+                    </button>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        // Select Week Handler
+        function selectWeek(weekNum) {
+            activeWeek = weekNum;
+            
+            // Update buttons styling
+            for (let w = 1; w <= 16; w++) {
+                const btn = document.getElementById(`weekBtn-${w}`);
+                if (btn) {
+                    if (w === weekNum) {
+                        btn.className = "week-btn active px-3.5 py-1.5 rounded-lg border text-xs font-bold transition-all shrink-0";
+                    } else {
+                        btn.className = "week-btn bg-slate-800 text-slate-300 hover:bg-slate-700 px-3.5 py-1.5 rounded-lg border border-slate-700 text-xs font-bold transition-all shrink-0";
+                    }
+                }
+            }
+
+            // Update Week Header Info
+            const data = weeklyPlanData[weekNum];
+            if (data) {
+                document.getElementById('currentWeekPhaseTag').innerText = data.phase;
+                document.getElementById('currentWeekTitle').innerText = data.title;
+                document.getElementById('currentWeekGoal').innerText = "📌 " + data.goal;
+            }
+
+            // Render active day
+            selectDay(activeDay);
+        }
+
+        // Select Day Handler
+        function selectDay(dayNum) {
+            activeDay = dayNum;
+
+            // Update Day Buttons
+            for (let d = 1; d <= 5; d++) {
+                const btn = document.getElementById(`dayBtn-${d}`);
+                if (btn) {
+                    if (d === dayNum) {
+                        btn.className = "day-btn active py-2.5 rounded-lg text-slate-100 transition-all font-bold shadow-lg";
+                    } else {
+                        btn.className = "day-btn py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all font-semibold";
+                    }
+                }
+            }
+
+            // Render Tasks Grid
+            const dayData = weeklyPlanData[activeWeek]?.days[dayNum];
+            if (!dayData) return;
+
+            document.getElementById('selectedDayLabel').innerText = dayData.name;
+
+            const grid = document.getElementById('dailyTasksGrid');
+            if (grid) {
+                grid.innerHTML = `
+                    <!-- Cyber Member -->
+                    <div class="p-4 rounded-xl glass-panel border border-rose-500/30 space-y-2">
+                        <div class="flex items-center justify-between text-rose-300 font-bold border-b border-slate-800 pb-2">
+                            <span class="flex items-center gap-1.5"><i class="fas fa-shield-halved"></i> 1. الأمن السيبراني (Cyber)</span>
+                            <span class="text-[10px] bg-rose-500/20 px-2 py-0.5 rounded">Cybersecurity</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed">${dayData.m1}</p>
+                    </div>
+
+                    <!-- AI Member -->
+                    <div class="p-4 rounded-xl glass-panel border border-purple-500/30 space-y-2">
+                        <div class="flex items-center justify-between text-purple-300 font-bold border-b border-slate-800 pb-2">
+                            <span class="flex items-center gap-1.5"><i class="fas fa-robot"></i> 2. الذكاء الاصطناعي (AI CS 1)</span>
+                            <span class="text-[10px] bg-purple-500/20 px-2 py-0.5 rounded">AI / ML Lead</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed">${dayData.m2}</p>
+                    </div>
+
+                    <!-- Backend Member -->
+                    <div class="p-4 rounded-xl glass-panel border border-blue-500/30 space-y-2">
+                        <div class="flex items-center justify-between text-blue-300 font-bold border-b border-slate-800 pb-2">
+                            <span class="flex items-center gap-1.5"><i class="fas fa-server"></i> 3. الخادم والـ DB (CS 2)</span>
+                            <span class="text-[10px] bg-blue-500/20 px-2 py-0.5 rounded">Backend Lead</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed">${dayData.m3}</p>
+                    </div>
+
+                    <!-- Frontend Member -->
+                    <div class="p-4 rounded-xl glass-panel border border-emerald-500/30 space-y-2">
+                        <div class="flex items-center justify-between text-emerald-300 font-bold border-b border-slate-800 pb-2">
+                            <span class="flex items-center gap-1.5"><i class="fas fa-mobile-screen"></i> 4. الموبايل والويب (CS 3)</span>
+                            <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded">UI/UX & Mobile</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed">${dayData.m4}</p>
+                    </div>
+
+                    <!-- Integrations Member -->
+                    <div class="p-4 rounded-xl glass-panel border border-amber-500/30 space-y-2 lg:col-span-2">
+                        <div class="flex items-center justify-between text-amber-300 font-bold border-b border-slate-800 pb-2">
+                            <span class="flex items-center gap-1.5"><i class="fas fa-plug"></i> 5. الخدمات والتكامل (CS 4)</span>
+                            <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded">Integrations Lead</span>
+                        </div>
+                        <p class="text-slate-300 leading-relaxed">${dayData.m5}</p>
+                    </div>
+                `;
+            }
+        }
+
         // Global Tab Switching Logic
         function switchTab(tabId) {
-            // Hide all views
-            const views = ['overview', 'team', 'phases', 'modules', 'tools', 'learning', 'simulator'];
+            const views = ['overview', 'weekly-schedule', 'team', 'phases', 'modules', 'tools', 'learning', 'simulator'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.add('hidden');
@@ -1124,7 +1410,6 @@
                 }
             });
 
-            // Show selected view
             const targetView = document.getElementById(`view-${tabId}`);
             if (targetView) targetView.classList.remove('hidden');
 
@@ -1134,7 +1419,11 @@
                 targetBtn.classList.remove('text-slate-300');
             }
 
-            // Scroll to top
+            if (tabId === 'weekly-schedule') {
+                initWeeksSelector();
+                selectWeek(activeWeek);
+            }
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1153,7 +1442,6 @@
                 }
             });
 
-            // Update button styles
             const btns = document.querySelectorAll('.team-filter-btn');
             btns.forEach(btn => {
                 btn.classList.remove('bg-pharaoh-gold', 'text-pharaoh-dark', 'font-bold');
@@ -1171,7 +1459,6 @@
 
             const platform = document.getElementById('simPlatform').value;
             const budget = document.getElementById('simBudget').value;
-            const days = document.getElementById('simDays').value;
 
             btn.disabled = true;
             btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري استدعاء Central FastAPI AI Engine...`;
@@ -1228,6 +1515,11 @@
         document.getElementById('mobileNavToggle')?.addEventListener('click', function() {
             const container = document.getElementById('navTabsContainer');
             container.classList.toggle('flex-wrap');
+        });
+
+        // Initialize default view
+        window.addEventListener('DOMContentLoaded', () => {
+            initWeeksSelector();
         });
     </script>
 </body>
